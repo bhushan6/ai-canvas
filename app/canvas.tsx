@@ -1,0 +1,320 @@
+"use client";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import {
+  ReactFlow,
+  Controls,
+  Background,
+  applyNodeChanges,
+  applyEdgeChanges,
+  addEdge,
+  Node,
+  Edge,
+  OnNodesChange,
+  OnEdgesChange,
+  OnConnect,
+  NodeTypes,
+  DefaultEdgeOptions,
+  Connection,
+} from "@xyflow/react";
+import { v4 as uuidv4 } from "uuid";
+import {
+  CombineImageNodeData,
+  GenerateVideoNodeData,
+  NodeData,
+  PromptToImageData,
+  SimpleImageNodeData,
+} from "@/lib/types";
+import PromptToImageNode from "./nodes/prompt-to-image";
+import SimpleImageNode from "./nodes/simple-image";
+import CombineImageNode from "./nodes/combine-image";
+import EditImageNode from "./nodes/edit-image";
+
+import "@xyflow/react/dist/style.css";
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { ImageIcon, ImageUpIcon, Merge } from "lucide-react";
+import { fileToBase64 } from "@/lib/utils";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+
+// promptToImage: PromptToImageNode,
+// simpleImage: SimpleImageNode,
+// combineImage: CombineImageNode,
+// editImage: EditImageNode,
+// generateVideo: GenerateVideoNode,
+
+const initialNodes: Node<NodeData>[] = [];
+const initialEdges: Edge[] = [];
+
+const AddNodeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5 mr-2"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
+export function Canvas() {
+  const [nodes, setNodes] = useState<Node[]>(initialNodes);
+  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    [setNodes],
+  );
+  const onEdgesChange: OnEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    [setEdges],
+  );
+  const onConnect: OnConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges],
+  );
+
+  const nodeTypes: NodeTypes = useMemo(
+    () => ({
+      promptToImage: PromptToImageNode,
+      simpleImage: SimpleImageNode,
+      combineImage: CombineImageNode,
+      editImage: EditImageNode,
+      // generateVideo: GenerateVideoNode,
+    }),
+    [],
+  );
+
+  const defaultEdgeOptions: DefaultEdgeOptions = useMemo(
+    () => ({
+      animated: true,
+    }),
+    [],
+  );
+
+  const nodesWithUpdaters = useMemo(() => {
+    return nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+      },
+    }));
+  }, [nodes]);
+
+  const addNode = (
+    type:
+      | "promptToImage"
+      | "simpleImage"
+      | "combineImage"
+      | "editImage"
+      | "generateVideo",
+  ) => {
+    const id = uuidv4();
+    let data: NodeData["data"];
+
+    switch (type) {
+      case "simpleImage":
+        data = { image: null, isLoading: false } as SimpleImageNodeData["data"];
+
+        break;
+      case "generateVideo":
+        data = {
+          prompt: "",
+          videoUrl: null,
+          isLoading: false,
+        } as GenerateVideoNodeData["data"];
+        break;
+      case "promptToImage":
+      case "combineImage":
+      case "editImage":
+        data = { prompt: "", image: null, isLoading: false };
+        break;
+    }
+
+    const newNode: Node<NodeData> = {
+      id,
+      type,
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      //@ts-expect-error: ignore for now
+      data,
+    };
+    setNodes((nds) => nds.concat(newNode));
+  };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [showToolbar, setShowToolbar] = useState(false);
+
+  const currentSelectedNodes = useRef<Node[]>([]);
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const imagePart = await fileToBase64(file);
+        const imageUrl = `data:${imagePart.mimeType};base64,${imagePart.data}`;
+        const newNode = {
+          id: uuidv4(),
+          type: "simpleImage",
+          position: { x: Math.random() * 400, y: Math.random() * 400 },
+          data: {
+            image: imageUrl,
+            isLoading: false,
+            userUploaded: true,
+          },
+        };
+        setNodes((nds) => nds.concat(newNode));
+      } catch (error) {
+        console.error("Error converting file to base64:", error);
+        alert("Failed to load image.");
+      }
+    }
+  };
+
+  return (
+    <div style={{ height: "100vh", width: "100vw", position: "relative" }}>
+      <ContextMenu>
+        <ContextMenuTrigger>
+          <ReactFlow
+            nodes={nodesWithUpdaters}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            defaultEdgeOptions={defaultEdgeOptions}
+            onSelectionChange={({ nodes }) => {
+              currentSelectedNodes.current = nodes;
+              const allAreImageNodes = nodes.every(
+                (node) => node.type === "simpleImage",
+              );
+              if (!allAreImageNodes || nodes.length < 2) {
+                setShowToolbar(false);
+                return;
+              }
+              setShowToolbar(true);
+            }}
+            // fitView
+          >
+            <Controls />
+            <Background gap={16} />
+          </ReactFlow>
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-52">
+          <ContextMenuItem
+            inset
+            onClick={(e) => {
+              console.log(e.clientX, e.clientY);
+              const data: PromptToImageData = {
+                prompt: "",
+                image: null,
+                isLoading: false,
+              };
+
+              const newNode: Node<NodeData> = {
+                id: uuidv4(),
+                type: "promptToImage",
+                position: { x: e.clientX, y: e.clientY },
+                //@ts-expect-error: ignore for now
+                data,
+              };
+              setNodes((nds) => nds.concat(newNode));
+            }}
+          >
+            <ImageIcon />
+            Generate Image
+          </ContextMenuItem>
+          <ContextMenuItem
+            inset
+            onClick={() => {
+              inputRef.current?.click();
+            }}
+          >
+            <ImageUpIcon />
+            Import Image
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+
+      {showToolbar && (
+        <Menubar className="absolute z-10 bottom-0 left-1/2 my-5 -translate-x-1/2">
+          <MenubarMenu>
+            <MenubarTrigger
+              className="flex gap-2 justify-center items-center"
+              onClick={() => {
+                const selectedNodes = currentSelectedNodes.current;
+
+                const averageYPosition =
+                  selectedNodes.reduce(
+                    (acc, node) => acc + node.position.y,
+                    0,
+                  ) / selectedNodes.length;
+                const averageXPosition =
+                  selectedNodes.reduce(
+                    (acc, node) => acc + node.position.x,
+                    0,
+                  ) / selectedNodes.length;
+
+                const combileNodeData: CombineImageNodeData = {
+                  id: uuidv4(),
+                  type: "combineImage",
+                  data: { image: null, isLoading: false, prompt: "" },
+                  position: { x: averageXPosition + 400, y: averageYPosition },
+                };
+                setNodes((nds) => nds.concat(combileNodeData));
+
+                setEdges((eds) => {
+                  const newEdges: Edge[] = [];
+                  selectedNodes.forEach((node) => {
+                    newEdges.push({
+                      id: uuidv4(),
+                      source: node.id,
+                      target: combileNodeData.id,
+                    });
+                  });
+                  return eds.concat(newEdges);
+                });
+              }}
+            >
+              <Merge size={14} /> Combine
+            </MenubarTrigger>
+          </MenubarMenu>
+        </Menubar>
+      )}
+    </div>
+  );
+}
