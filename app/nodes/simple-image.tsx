@@ -14,69 +14,7 @@ import { AlertCircleIcon, Download, Edit, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
-import { cn } from "@/lib/utils";
-
-/**
- * Downloads an image from a URL or a Base64 data URL.
- *
- * @param source The image URL (e.g., 'https://...') or a Base64 data URL (e.g., 'data:image/png;base64,...').
- * @param fileName The desired filename for the downloaded image (e.g., 'my-photo.jpg').
- * @returns A Promise that resolves when the download is attempted.
- */
-async function downloadImage(
-  source: string,
-  fileName: string = "downloaded-image.png",
-): Promise<{ success: boolean }> {
-  const isBase64 = source.startsWith("data:");
-
-  try {
-    let blob: Blob;
-
-    if (isBase64) {
-      // 1. Handle Base64 Data URL
-      const parts = source.split(",");
-      const mimeMatch = parts[0].match(/:(.*?);/);
-      const mimeType = mimeMatch ? mimeMatch[1] : "image/png";
-      const base64Data = parts.length > 1 ? parts[1] : parts[0]; // Get the actual base64 part
-
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      blob = new Blob([byteArray], { type: mimeType });
-    } else {
-      // 2. Handle Regular URL (requires CORS or same-origin)
-      const response = await fetch(source);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.statusText}`);
-      }
-
-      // Get the image data as a Blob
-      blob = await response.blob();
-    }
-
-    // 3. Create a temporary download link and trigger the download
-    const blobUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = blobUrl;
-    link.download = fileName; // Set the desired file name
-    document.body.appendChild(link);
-    link.click(); // Programmatically click the link to start the download
-    document.body.removeChild(link);
-    URL.revokeObjectURL(blobUrl); // Clean up the temporary URL
-    return { success: true };
-  } catch (error) {
-    console.error("Error during image download:", error);
-    // alert(
-    //   `Download failed. This is often due to CORS policy for external URLs.`,
-    // );
-    return { success: false };
-  }
-}
+import { cn, downloadImage } from "@/lib/utils";
 
 function ImageDisplayCard({ displayImage }: { displayImage: string }) {
   const [isLoaded, setIsLoaded] = useState(false);

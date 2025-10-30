@@ -8,7 +8,6 @@ import {
   useReactFlow,
   useNodeConnections,
 } from "@xyflow/react";
-// import NodeWrapper from "./node-wrapper";
 import {
   EditImageNodeData,
   ImagePart,
@@ -96,55 +95,6 @@ const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
   };
 
   return (
-    // <NodeWrapper title="Edit Image">
-    //   <Handle type="target" position={Position.Left} id="image-input" />
-    //   <div className="flex flex-col gap-2">
-    //     <div className="w-full h-32 bg-gray-700 rounded-md flex items-center justify-center text-gray-400 overflow-hidden">
-    //       {inputImage ? (
-    //         <img
-    //           src={inputImage}
-    //           alt="Input"
-    //           className="w-full h-full object-cover"
-    //         />
-    //       ) : (
-    //         "No Image Input"
-    //       )}
-    //     </div>
-    //     <label
-    //       htmlFor={`prompt-${id}`}
-    //       className="text-sm font-medium text-gray-300"
-    //     >
-    //       Prompt
-    //     </label>
-    //     <textarea
-    //       id={`prompt-${id}`}
-    //       value={prompt}
-    //       onChange={(e) => setPrompt(e.target.value)}
-    //       className="nodrag p-2 bg-gray-900 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    //       rows={3}
-    //     />
-    //     <button
-    //       onClick={handleEdit}
-    //       disabled={data.isLoading || !inputImage}
-    //       className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition-all duration-200 disabled:bg-gray-500"
-    //     >
-    //       {data.isLoading ? "Editing..." : "Edit"}
-    //     </button>
-    //     {data.image && (
-    //       <div className="mt-2 relative">
-    //         <img
-    //           src={data.image}
-    //           alt="Edited"
-    //           className="rounded-md w-full h-auto"
-    //         />
-    //         {data.isLoading && <LoadingSpinner />}
-    //       </div>
-    //     )}
-    //   </div>
-    //   <Handle type="source" position={Position.Right} id="image-output" />
-    // </NodeWrapper>
-    //
-    // '[.react-flow\\_\\_node.selected_&]:shadow-lg'
     <Card
       className={cn(
         `w-80 mx-auto border-stone-500 border-[0.5px] shadow-2xl ${selected ? "border-2" : ""} `,

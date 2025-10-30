@@ -18,12 +18,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { cn, getDebugParamFromCurrentUrl } from "@/lib/utils";
 
-// const LoadingSpinner = () => (
-//   <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-md">
-//     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400"></div>
-//   </div>
-// );
-
 const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
   id,
   data,
