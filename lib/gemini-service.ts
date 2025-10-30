@@ -1,8 +1,8 @@
-"use server";
+// "use server";
 import { GoogleGenAI, Modality } from "@google/genai";
 import { ImagePart } from "./types";
 
-const API_KEY = process.env.API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 if (!API_KEY) {
   console.warn("API_KEY not found in environment variables. Please set it up.");
 }

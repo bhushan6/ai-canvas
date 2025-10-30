@@ -17,13 +17,7 @@ import {
   Connection,
 } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
-import {
-  CombineImageNodeData,
-  GenerateVideoNodeData,
-  NodeData,
-  PromptToImageData,
-  SimpleImageNodeData,
-} from "@/lib/types";
+import { CombineImageNodeData, NodeData, PromptToImageData } from "@/lib/types";
 import PromptToImageNode from "./nodes/prompt-to-image";
 import SimpleImageNode from "./nodes/simple-image";
 import CombineImageNode from "./nodes/combine-image";
