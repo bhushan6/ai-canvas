@@ -82,7 +82,7 @@ const DownloadButton = ({
       disabled={isDownloading}
     >
       {isDownloading ? <Loader2 className="animate-spin" /> : <Download />}{" "}
-      {isDownloading ? "Downloading..." : "Download"}
+      {/*{isDownloading ? "Downloading..." : "Download"}*/}
     </Button>
   );
 };
