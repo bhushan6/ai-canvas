@@ -104,10 +104,10 @@ const SimpleImageNode: React.FC<NodeProps<SimpleImageNodeData>> = ({
   const { deleteElements } = useReactFlow();
 
   useEffect(() => {
-    if (connections.length < 1) {
+    if (connections.length < 1 && !data.userUploaded) {
       deleteElements({ nodes: [{ id }] });
     }
-  }, [connections, id, deleteElements]);
+  }, [connections, id, deleteElements, data]);
 
   const { addNodes, addEdges } = useReactFlow();
 
