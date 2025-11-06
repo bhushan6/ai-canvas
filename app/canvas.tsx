@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useMemo, useRef, useEffect, memo } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import {
   ReactFlow,
   Controls,
@@ -33,17 +33,20 @@ import {
 import { ImageIcon, ImageUpIcon, Merge } from "lucide-react";
 import { fileToBase64 } from "@/lib/utils";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
+import { OpenAIChatNode } from "./nodes/openai-chat";
 
-const initialNodes: Node<NodeData>[] = [];
+const initialNodes: Node<NodeData>[] = [
+  // {
+  //   id: uuidv4(),
+  //   type: "openaiChat",
+  //   position: { x: 100, y: 100 },
+  //   data: {
+  //     isLoading: false,
+  //     prompt: "",
+  //   },
+  // },
+];
 const initialEdges: Edge[] = [];
-const initialState = {
-  title: "Untitled",
-  authors: ["Ada", "Ben"],
-  meta: {
-    pages: 3,
-    tags: ["draft", "internal"],
-  },
-};
 
 export function Canvas() {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
@@ -68,6 +71,7 @@ export function Canvas() {
       simpleImage: SimpleImageNode,
       combineImage: CombineImageNode,
       editImage: EditImageNode,
+      openaiChat: OpenAIChatNode,
     }),
     [],
   );
@@ -119,6 +123,20 @@ export function Canvas() {
       }
     }
   };
+
+  useEffect(() => {
+    setNodes([
+      {
+        id: uuidv4(),
+        type: "openaiChat",
+        position: { x: 100, y: 100 },
+        data: {
+          isLoading: false,
+          prompt: "",
+        },
+      },
+    ]);
+  }, []);
 
   return (
     <div style={{ height: "100vh", width: "100vw", position: "relative" }}>
