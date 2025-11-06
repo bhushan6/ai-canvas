@@ -1,4 +1,4 @@
-import { OpenAIChatNodeData } from "@/lib/types";
+import { OpenAIChatNodeType } from "@/lib/types";
 import { Handle, NodeProps, Position, useReactFlow } from "@xyflow/react";
 import { NodeWrapper } from "./NodeWrapper";
 import { Button } from "@/components/ui/button";
@@ -6,19 +6,18 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { v4 as uuidv4 } from "uuid";
 
-export const OpenAIChatNode: React.FC<NodeProps<OpenAIChatNodeData>> = ({
+export const OpenAIChatNode: React.FC<NodeProps<OpenAIChatNodeType>> = ({
   data,
   selected,
   id,
 }) => {
-  const { isLoading, prompt } = data;
+  const { isLoading, prompt, outputText } = data;
 
-  const [localPrompt, setPrompt] = useState("");
+  // const [localPrompt, setPrompt] = useState("");
 
   const { updateNodeData } = useReactFlow();
 
@@ -39,11 +38,15 @@ export const OpenAIChatNode: React.FC<NodeProps<OpenAIChatNodeData>> = ({
     }),
     onError: (error) => {
       console.error("Chat error:", error);
-      updateNodeData(id, { isLoading: false, prompt });
+      updateNodeData(id, { isLoading: false });
     },
     onFinish: (response) => {
       console.log("Chat finished:", response);
-      updateNodeData(id, { isLoading: false, prompt });
+      const assistantMessages = response.message.parts
+        .filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join("");
+      updateNodeData(id, { isLoading: false, outputText: assistantMessages });
     },
   });
 
@@ -53,28 +56,37 @@ export const OpenAIChatNode: React.FC<NodeProps<OpenAIChatNodeData>> = ({
 
   const lastMessage = assistantMessages.at(-1);
 
+  console.log(outputText);
+
   return (
     <NodeWrapper selected={selected}>
       <CardHeader>
         <CardTitle className="flex gap-2 items-center">
           <Sparkles />
-          Generate Image
+          Open AI Chat
         </CardTitle>
       </CardHeader>
       <CardContent>
         <form
           className="flex flex-col gap-2"
           onSubmit={(e) => {
+            if (!prompt) return;
             e.preventDefault();
-            sendMessage({ text: localPrompt });
-            updateNodeData(id, { isLoading: true, prompt });
+            sendMessage({ text: prompt });
+            updateNodeData(id, {
+              isLoading: true,
+              prompt,
+              outputText: undefined,
+            });
           }}
         >
           <Label htmlFor={`prompt-${id}`}>Prompt</Label>
           <Textarea
             id={`prompt-${id}`}
-            value={localPrompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            value={prompt}
+            onChange={(e) => {
+              updateNodeData(id, { prompt: e.target.value });
+            }}
             className="px-2 h-25"
           />
           <Label>Model</Label>
@@ -85,22 +97,22 @@ export const OpenAIChatNode: React.FC<NodeProps<OpenAIChatNodeData>> = ({
         </form>
       </CardContent>
       <CardContent>
-        {/* Display last message */}
-        {lastMessage && (
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2 items-center">
-              {lastMessage.parts.map((part, index) => {
-                if (part.type !== "text") return null;
-                return (
-                  <span key={index} className="text-sm">
-                    {part.text}
-                  </span>
-                );
-              })}
-            </div>
+        {outputText ? (
+          <div className="text-sm">{outputText}</div>
+        ) : lastMessage ? (
+          <div>
+            {lastMessage.parts.map((part, index) => {
+              if (part.type !== "text") return null;
+              return (
+                <span key={index} className="text-sm">
+                  {part.text}
+                </span>
+              );
+            })}
           </div>
-        )}
+        ) : null}
       </CardContent>
+
       <Handle type="source" position={Position.Right} id="openai-output" />
     </NodeWrapper>
   );
