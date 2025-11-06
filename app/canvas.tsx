@@ -133,6 +133,8 @@ export function Canvas() {
         data: {
           isLoading: false,
           prompt: "",
+          // outputText:
+          //   "Dogs, known for their unwavering loyalty and affection, have been humans' companions for thousands of years. They come in various breeds, each with unique traits and charm, from the energetic Border Collie to the gentle Golden Retriever. Dogs offer not only companionship but also security and assistance, as seen in roles like service and therapy animals. Their keen senses and intelligence make them adept at tasks like search and rescue. A dog's enthusiastic greeting after a long day can uplift spirits, highlighting their role in improving mental well-being. Truly, dogs enrich lives with their unconditional love and joyful presence.",
         },
       },
     ]);

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { convertToModelMessages, createGateway, streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+// import { openai } from "@ai-sdk/openai";
 import { postRequestBodySchema, type PostRequestBody } from "./schema";
 import { promises as fs } from "fs";
 
@@ -31,6 +31,13 @@ export async function POST(req: Request) {
     messages: convertToModelMessages([message]),
   });
 
+  // console.log(result, result.toTextStreamResponse());
+
+  // return result.toTextStreamResponse({
+  //   headers: {
+  //     "Content-Type": "text/event-stream",
+  //   },
+  // });
   return result.toUIMessageStreamResponse();
 }
 

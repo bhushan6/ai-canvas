@@ -8,10 +8,10 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import {
-  CombineImageNodeData,
+  CombineImageNodeType,
   ImagePart,
   NodeData,
-  SimpleImageNodeData,
+  SimpleImageNodeType,
 } from "@/lib/types";
 import { editOrCombineImage } from "@/lib/gemini-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +37,7 @@ const CombineImageNode = ({
   selected,
   positionAbsoluteX,
   positionAbsoluteY,
-}: NodeProps<CombineImageNodeData>) => {
+}: NodeProps<CombineImageNodeType>) => {
   const [prompt, setPrompt] = useState(data.prompt || "");
   const nodes = useNodes<NodeData>();
   const edges = useEdges();
@@ -81,7 +81,7 @@ const CombineImageNode = ({
         image: resultUrl,
         isLoading: false,
         userUploaded: false,
-      } as SimpleImageNodeData["data"];
+      } as SimpleImageNodeType["data"];
       const imageNode = {
         id: uuidv4(),
         type: "simpleImage",

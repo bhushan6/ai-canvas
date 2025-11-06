@@ -1,8 +1,8 @@
 import React, { useState, memo } from "react";
 import { Handle, Position, NodeProps, useReactFlow } from "@xyflow/react";
 import { generateImageFromPrompt } from "@/lib/gemini-service";
-import { PromptToImageNodeData, SimpleImageNodeData } from "@/lib/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PromptToImageNodeType, SimpleImageNodeType } from "@/lib/types";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { cn, getDebugParamFromCurrentUrl } from "@/lib/utils";
 import { NodeWrapper } from "./NodeWrapper";
 
-const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
+const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeType>> = ({
   id,
   data,
   positionAbsoluteX,
@@ -44,7 +44,7 @@ const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
         image: imageUrl,
         isLoading: false,
         userUploaded: false,
-      } as SimpleImageNodeData["data"];
+      } as SimpleImageNodeType["data"];
       const imageNode = {
         id: uuidv4(),
         type: "simpleImage",

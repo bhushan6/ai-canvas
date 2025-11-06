@@ -9,10 +9,10 @@ import {
   useNodeConnections,
 } from "@xyflow/react";
 import {
-  EditImageNodeData,
+  EditImageNodeType,
   ImagePart,
   NodeData,
-  SimpleImageNodeData,
+  SimpleImageNodeType,
 } from "@/lib/types";
 import { editOrCombineImage } from "@/lib/gemini-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from "uuid";
 import { cn } from "@/lib/utils";
 import { NodeWrapper } from "./NodeWrapper";
 
-const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
+const EditImageNode: React.FC<NodeProps<EditImageNodeType>> = ({
   id,
   data,
   positionAbsoluteX,
@@ -79,7 +79,7 @@ const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
         image: resultUrl,
         isLoading: false,
         userUploaded: false,
-      } as SimpleImageNodeData["data"];
+      } as SimpleImageNodeType["data"];
       const imageNode = {
         id: uuidv4(),
         type: "simpleImage",

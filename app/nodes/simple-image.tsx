@@ -6,15 +6,15 @@ import {
   useReactFlow,
   useNodeConnections,
 } from "@xyflow/react";
-import { SimpleImageNodeData } from "@/lib/types";
+import { SimpleImageNodeType } from "@/lib/types";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { AlertCircleIcon, Download, Edit, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
-import { cn, downloadImage } from "@/lib/utils";
+import { downloadImage } from "@/lib/utils";
 import { NodeWrapper } from "./NodeWrapper";
 
 function ImageDisplayCard({ displayImage }: { displayImage: string }) {
@@ -88,7 +88,7 @@ const DownloadButton = ({
   );
 };
 
-const SimpleImageNode: React.FC<NodeProps<SimpleImageNodeData>> = ({
+const SimpleImageNode: React.FC<NodeProps<SimpleImageNodeType>> = ({
   id,
   data,
   positionAbsoluteX,
