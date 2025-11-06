@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { v4 as uuidv4 } from "uuid";
 import { cn } from "@/lib/utils";
+import { NodeWrapper } from "./NodeWrapper";
 
 const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
   id,
@@ -95,11 +96,7 @@ const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
   };
 
   return (
-    <Card
-      className={cn(
-        `w-80 mx-auto border-stone-500 border-[0.5px] shadow-2xl ${selected ? "border-2" : ""} `,
-      )}
-    >
+    <NodeWrapper selected={selected}>
       <Handle
         type="target"
         position={Position.Left}
@@ -148,7 +145,7 @@ const EditImageNode: React.FC<NodeProps<EditImageNodeData>> = ({
         position={Position.Right}
         id="image-output"
       />
-    </Card>
+    </NodeWrapper>
   );
 };
 

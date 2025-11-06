@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { v4 as uuidv4 } from "uuid";
 import { cn, getDebugParamFromCurrentUrl } from "@/lib/utils";
+import { NodeWrapper } from "./NodeWrapper";
 
 const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
   id,
@@ -61,11 +62,7 @@ const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
 
   return (
     <>
-      <Card
-        className={cn(
-          `w-80 mx-auto border-stone-500 border-[0.5px] shadow-2xl ${selected ? "border-2" : ""} `,
-        )}
-      >
+      <NodeWrapper selected={selected}>
         <CardHeader>
           <CardTitle className="flex gap-2 items-center">
             <Sparkles />
@@ -110,7 +107,7 @@ const PromptToImageNode: React.FC<NodeProps<PromptToImageNodeData>> = ({
           position={Position.Right}
           id="image-output"
         />
-      </Card>
+      </NodeWrapper>
     </>
   );
 };

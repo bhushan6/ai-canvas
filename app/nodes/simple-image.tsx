@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { v4 as uuidv4 } from "uuid";
 import { cn, downloadImage } from "@/lib/utils";
+import { NodeWrapper } from "./NodeWrapper";
 
 function ImageDisplayCard({ displayImage }: { displayImage: string }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -113,11 +114,7 @@ const SimpleImageNode: React.FC<NodeProps<SimpleImageNodeData>> = ({
 
   return (
     <>
-      <Card
-        className={cn(
-          `w-80 mx-auto border-stone-500 border-[0.5px] shadow-2xl ${selected ? "border-2" : ""} my-2`,
-        )}
-      >
+      <NodeWrapper selected={selected}>
         {!data.userUploaded && (
           <Handle
             type="target"
@@ -130,7 +127,7 @@ const SimpleImageNode: React.FC<NodeProps<SimpleImageNodeData>> = ({
           {displayImage && <ImageDisplayCard displayImage={displayImage} />}
         </CardContent>
         <Handle type="source" position={Position.Right} id="image-output" />
-      </Card>
+      </NodeWrapper>
       <div className="absolute bottom-0 right-2 translate-y-full  flex gap-1 ">
         {displayImage && <DownloadButton displayImage={displayImage} id={id} />}
         <Button

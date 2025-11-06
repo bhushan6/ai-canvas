@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { v4 as uuidv4 } from "uuid";
 import { cn, getDebugParamFromCurrentUrl } from "@/lib/utils";
+import { NodeWrapper } from "./NodeWrapper";
 
 const CombineImageNode = ({
   id,
@@ -97,11 +98,7 @@ const CombineImageNode = ({
   };
 
   return (
-    <Card
-      className={cn(
-        `w-80 mx-auto border-stone-500 border-[0.5px] shadow-2xl ${selected ? "border-2" : ""} `,
-      )}
-    >
+    <NodeWrapper selected={selected}>
       <Handle type="target" position={Position.Left} id="image-input" />
       <CardHeader>
         <CardTitle className="flex gap-2 items-center">
@@ -145,7 +142,7 @@ const CombineImageNode = ({
         position={Position.Right}
         id="image-output"
       />
-    </Card>
+    </NodeWrapper>
   );
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect, memo } from "react";
 import {
   ReactFlow,
   Controls,
@@ -36,6 +36,14 @@ import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 
 const initialNodes: Node<NodeData>[] = [];
 const initialEdges: Edge[] = [];
+const initialState = {
+  title: "Untitled",
+  authors: ["Ada", "Ben"],
+  meta: {
+    pages: 3,
+    tags: ["draft", "internal"],
+  },
+};
 
 export function Canvas() {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
