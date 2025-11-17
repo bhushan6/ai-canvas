@@ -17,7 +17,7 @@ import {
   Connection,
 } from "@xyflow/react";
 import { v4 as uuidv4 } from "uuid";
-import { CombineImageNodeData, NodeData, PromptToImageData } from "@/lib/types";
+import { CombineImageNodeType, NodeData, PromptToImageData } from "@/lib/types";
 import PromptToImageNode from "./nodes/prompt-to-image";
 import SimpleImageNode from "./nodes/simple-image";
 import CombineImageNode from "./nodes/combine-image";
@@ -163,7 +163,6 @@ export function Canvas() {
               }
               setShowToolbar(true);
             }}
-            // fitView
           >
             <Controls />
             <Background gap={16} />
@@ -232,7 +231,7 @@ export function Canvas() {
                     0,
                   ) / selectedNodes.length;
 
-                const combileNodeData: CombineImageNodeData = {
+                const combileNodeData: CombineImageNodeType = {
                   id: uuidv4(),
                   type: "combineImage",
                   data: { image: null, isLoading: false, prompt: "" },
